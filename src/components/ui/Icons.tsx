@@ -1,5 +1,7 @@
 import gameCoinImage from '../../assets/game_coin.jpeg';
 import tokenImage from '../../assets/multi_token.jpeg';
+import { ARCADE_COINS, TOKEN_META } from '../../config/currencies';
+import type { CurrencyKey } from '../../types/models';
 
 export function TokenIcon({ className = 'currency-icon' }: { className?: string }) {
   return <img className={className} src={tokenImage} alt="" aria-hidden="true" />;
@@ -7,6 +9,24 @@ export function TokenIcon({ className = 'currency-icon' }: { className?: string 
 
 export function CoinIcon({ className = 'currency-icon' }: { className?: string }) {
   return <img className={className} src={gameCoinImage} alt="" aria-hidden="true" />;
+}
+
+const CURRENCY_IMAGES: Partial<Record<CurrencyKey, string>> = {
+  ...Object.fromEntries(ARCADE_COINS.map((coin) => [coin.key, coin.image])),
+  tokens: TOKEN_META.image,
+};
+
+/** Renders the matching coin artwork for any wallet currency. */
+export function CurrencyIcon({
+  currency,
+  className = 'currency-icon',
+}: {
+  currency: CurrencyKey;
+  className?: string;
+}) {
+  const image = CURRENCY_IMAGES[currency];
+  if (!image) return null;
+  return <img className={className} src={image} alt="" aria-hidden="true" />;
 }
 
 export function MenuIcon() {

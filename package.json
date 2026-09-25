@@ -8,7 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"index.html\"",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "verify:wormzy": "node --import ./scripts/asset-loader.mjs scripts/verify-wormzy-levels.ts",
+    "verify:rewards": "node --import ./scripts/asset-loader.mjs scripts/verify-rewards.ts",
+    "verify:wormzy:render": "vite build --ssr scripts/render-wormzy.tsx --outDir dist-ssr --logLevel warn && node dist-ssr/render-wormzy.js"
   },
   "dependencies": {
     "dexie": "^4.4.6",

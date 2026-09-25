@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { REWARD_OPTIONS } from '../config/rewards';
+import { ARCADE_COINS, TOKEN_META } from '../config/currencies';
 import { useWallet } from '../context/AppContext';
 import { useActionLock } from '../hooks/useActionLock';
+import { useFlashOnChange } from '../hooks/useFlashOnChange';
 import { formatNumber } from '../lib/format';
 import { redeemReward } from '../services/redeemService';
 import { InsufficientBalanceError } from '../services/walletService';
-import { CoinIcon } from '../components/ui/Icons';
+import { CurrencyIcon } from '../components/ui/Icons';
 import { Modal } from '../components/ui/Modal';
-import type { RewardOption } from '../types/models';
+import type { CurrencyKey, RewardOption } from '../types/models';
+
+const COIN_KEYS = ARCADE_COINS.map((coin) => coin.key) as CurrencyKey[];
 
 export function RedeemPage() {
   const wallet = useWallet();
@@ -16,6 +20,7 @@ export function RedeemPage() {
   const [selected, setSelected] = useState<RewardOption | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const flashed = useFlashOnChange(wallet, COIN_KEYS);
 
   const confirm = () => {
     if (!selected) return;
@@ -40,14 +45,19 @@ export function RedeemPage() {
         <p className="lead">
           Convert arcade coins into VELOOP currencies. Every swap is stored locally.
         </p>
-        <div className="hero-wallets">
-          <article>
-            <div>
-              <small>Available Game Coins</small>
-              <CoinIcon />
-              <strong>{formatNumber(wallet.gameCoins)}</strong>
-            </div>
-          </article>
+        <div className="hero-wallets" aria-label="Available coins">
+          {ARCADE_COINS.map((coin) => (
+            <article
+              key={coin.key}
+              className={flashed.has(coin.key) ? 'coin-balance is-flashing' : 'coin-balance'}
+            >
+              <img className="currency-icon" src={coin.image} alt="" aria-hidden="true" />
+              <div>
+                <small>Available {coin.label}</small>
+                <strong>{formatNumber(wallet[coin.key])}</strong>
+              </div>
+            </article>
+          ))}
         </div>
         <p>
           <Link to="/redeem/history">View redemption history</Link>
@@ -78,12 +88,12 @@ export function RedeemPage() {
         })}
       </div>
 
-      <section className="wallet-strip" aria-label="Full wallet">
-        <span>VE {wallet.ves}</span>
-        <span>SVE {wallet.sves}</span>
-        <span>Gems {wallet.gems}</span>
-        <span>Tokens {wallet.tokens}</span>
-        <span>Spins {wallet.spins}</span>
+      <section className="wallet-strip" aria-label="Other balances">
+        <span>
+          <CurrencyIcon currency={TOKEN_META.key} /> {TOKEN_META.label}{' '}
+          {formatNumber(wallet[TOKEN_META.key])}
+        </span>
+        <span>Spins {formatNumber(wallet.spins)}</span>
       </section>
 
       <Modal

@@ -42,6 +42,9 @@ export default function App() {
               <Route path="/games" element={<GamesHubPage />} />
               <Route path="/games/wormzy" element={<WormzyPage />} />
               <Route path="/games/aqua-fill" element={<AquaFillPage />} />
+              {/* The game cards link to /games/:slug — keep the live slug routes working. */}
+              <Route path="/games/vault-breaker" element={<WormzyPage />} />
+              <Route path="/games/prism-drift" element={<AquaFillPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/redeem" element={<RedeemPage />} />
               <Route path="/redeem/history" element={<RedeemHistoryPage />} />

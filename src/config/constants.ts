@@ -13,8 +13,10 @@ export const DEMO_WALLET = {
 } as const;
 
 export const GAME_DURATION = {
-  'vault-breaker': 45,
-  'prism-drift': 50,
+  // Wormzy plays 15 levels of 10 seconds; the session clock only measures elapsed run time.
+  'vault-breaker': 150,
+  // Aqua Fill plays 20 levels (10s each, then 15s) — same idea: elapsed run time.
+  'prism-drift': 260,
 } as const;
 
 export const REVIVE_BONUS_SECONDS = 12;
